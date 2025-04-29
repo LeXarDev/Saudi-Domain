@@ -69,3 +69,4 @@ public/worker-*.js.map
 # Reports
 /reports
 /coverage-reports
+nginx.conf
