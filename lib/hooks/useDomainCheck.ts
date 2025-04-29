@@ -1,10 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { formatDomain, generateAlternativeDomains, generateDemoWhoisData, getDomainPrice } from "../utils/domain-utils";
 
+export interface WhoisData {
+  registrar: string;
+  registrantName: string;
+  registrantOrganization: string;
+  creationDate: string;
+  expiryDate: string;
+  lastUpdated: string;
+  status: string;
+  nameServers: string[];
+}
+
 export interface DomainResult {
   domain: string;
   status: 'available' | 'in_use' | 'error';
   message: string;
+  whoisData?: WhoisData;
 }
 
 interface CacheItem {
@@ -78,6 +90,7 @@ export function useDomainCheck() {
         domain,
         status: data.status,
         message: data.message,
+        whoisData: data.status === 'in_use' ? generateDemoWhoisData(domain, false) : undefined
       };
 
       // تخزين النتيجة في التخزين المؤقت

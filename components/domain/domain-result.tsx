@@ -146,31 +146,74 @@ export function DomainResultCard({ result }: DomainResultProps) {
             ? dictionary.domainChecker.allTLDsTitle 
             : dictionary.domainChecker.multiDomainTitle}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {results.map((domainResult) => (
-            <Card key={domainResult.domain} className="border-2">
-              <CardContent className="pt-4">
-                <div className="flex items-center justify-between mb-2">
+            <Card key={domainResult.domain} className="border h-full bg-card/50">
+              <CardContent className="p-3 h-full flex flex-col justify-between space-y-3">
+                <div className="flex items-center justify-between gap-2">
                   <p className="font-medium">{domainResult.domain}</p>
-                  <p className={`text-sm font-semibold ${domainResult.status === 'available' ? "text-green-500" : "text-red-500"}`}>
+                  <p className={`text-xs font-medium px-2 py-0.5 rounded-full ${domainResult.status === 'available' ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"}`}>
                     {domainResult.status === 'available' 
                       ? dictionary.domainChecker.available 
                       : dictionary.domainChecker.unavailable}
                   </p>
                 </div>
-                {domainResult.status === 'available' && (
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <span>{getDomainPrice(domainResult.domain.substring(domainResult.domain.indexOf(".")))}</span>
-                      <SARIcon className="h-3.5 w-3.5 text-white" />
-                    </p>
-                    {!domainResult.domain.includes("gov") && (
-                      <div className="flex gap-2">
-                        {createActionButtons(domainResult.domain, domainResult.status)}
-                      </div>
-                    )}
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-2 justify-between">
+                  {!domainResult.domain.includes("gov") && (
+                    <div className="flex items-center gap-1.5 bg-primary/5 rounded-lg px-2 py-1">
+                      <p className="text-sm font-medium text-primary flex items-center gap-1 rtl:flex-row-reverse">
+                        <span>{getDomainPrice(domainResult.domain.substring(domainResult.domain.indexOf(".")))}</span>
+                        <SARIcon className="h-3.5 w-3.5" />
+                      </p>
+                      <span className="text-xs text-muted-foreground">{dictionary.domainChecker.price}</span>
+                    </div>
+                  )}
+                  {domainResult.status === 'available' && (
+                    <div className="flex gap-1.5 rtl:flex-row-reverse">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-7 w-7"
+                              onClick={() => copyToClipboard(domainResult.domain)}
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{copied ? dictionary.domainChecker.copied : dictionary.domainChecker.copy}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-7 w-7"
+                              onClick={() => shareDomain(domainResult.domain, true)}
+                            >
+                              <Share className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{shared ? dictionary.domainChecker.shared : dictionary.domainChecker.share}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <Button
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => window.open(`https://nic.sa/ar/domain-registration`, "_blank")}
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -180,8 +223,8 @@ export function DomainResultCard({ result }: DomainResultProps) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto animate-in fade-in-50 duration-500 slide-in-from-bottom-10">
-      <CardHeader>
+    <Card className={`w-full mx-auto animate-in fade-in-50 duration-500 slide-in-from-bottom-10 ${isMultiResult ? 'max-w-4xl' : 'max-w-2xl'}`}>
+      <CardHeader className={isMultiResult ? 'px-4 py-4' : undefined}>
         {isMultiResult ? renderMultiResults(result) : renderSingleResult(result)}
       </CardHeader>
     </Card>

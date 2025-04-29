@@ -29,6 +29,15 @@
     "share": "مشاركة",
     "shared": "تمت المشاركة!",
     "price": "في السنة ر.س",
+    "result": {
+      "registeredOn": "تاريخ التسجيل",
+      "expiresOn": "تاريخ الانتهاء",
+      "registrar": "المسجل",
+      "status": "الحالة",
+      "nameServers": "خوادم الأسماء",
+      "registrant": "المسجل"
+    },
+
     "history": {
       "title": "سجل البحث",
       "empty": "لا يوجد سجل بحث",

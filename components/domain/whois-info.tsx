@@ -22,7 +22,7 @@ export function WhoisInfo({ whoisData }: WhoisInfoProps) {
           <h4 className="font-medium text-sm text-muted-foreground">
             {dictionary.domainChecker.result.registeredOn}
           </h4>
-          <p>{whoisData.registrationDate}</p>
+          <p>{whoisData.creationDate}</p>
         </div>
         
         <div className="space-y-2">
@@ -58,8 +58,8 @@ export function WhoisInfo({ whoisData }: WhoisInfoProps) {
       
       <div className="space-y-2">
         <h4 className="font-medium text-sm text-muted-foreground">Registrant</h4>
-        <p>{whoisData.registrant.organization}</p>
-        <p>{whoisData.registrant.country}</p>
+        <p>{whoisData.registrantName}</p>
+        <p>{whoisData.registrantOrganization}</p>
       </div>
     </div>
   );

@@ -34,8 +34,17 @@
     "alternativesTitle": "Alternative Domains",
     "bulkResults": "Bulk Search Results",
     "multiDomainTitle": "Multiple Domain Results",
-    "allTLDsTitle": "All Extensions Results"
+    "allTLDsTitle": "All Extensions Results",
+    "result": {
+      "registeredOn": "Registration Date",
+      "expiresOn": "Expiry Date",
+      "registrar": "Registrar",
+      "status": "Status",
+      "nameServers": "Name Servers",
+      "registrant": "Registrant"
+    }
   },
+
   "history": {
     "title": "Search History",
     "empty": "No search history",

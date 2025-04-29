@@ -53,7 +53,7 @@ export const generateAlternativeDomains = (domain: string): string[] => {
 // Generate fake WHOIS data for demo purposes
 export const generateDemoWhoisData = (domain: string, isAvailable: boolean) => {
   if (isAvailable) {
-    return null;
+    return undefined;
   }
   
   const today = new Date();
@@ -64,19 +64,17 @@ export const generateDemoWhoisData = (domain: string, isAvailable: boolean) => {
   expiryDate.setFullYear(expiryDate.getFullYear() + 1);
   
   return {
-    domain: domain,
     registrar: "Saudi Network Information Center",
-    registrationDate: registrationDate.toISOString().split('T')[0],
+    registrantName: "Sample Organization",
+    registrantOrganization: "Sample Organization Ltd.",
+    creationDate: registrationDate.toISOString().split('T')[0],
     expiryDate: expiryDate.toISOString().split('T')[0],
+    lastUpdated: today.toISOString().split('T')[0],
+    status: "Active",
     nameServers: [
       "ns1.saudinic.net.sa",
       "ns2.saudinic.net.sa"
-    ],
-    status: "Active",
-    registrant: {
-      organization: "Sample Organization",
-      country: "Saudi Arabia"
-    }
+    ]
   };
 };
 
@@ -87,8 +85,8 @@ export const getDomainPrice = (tld: string = ".sa"): string => {
     ".com.sa": "149",
     ".net.sa": "149",
     ".org.sa": "149",
-    ".edu.sa": "99",
-    ".med.sa": "199",
+    ".edu.sa": "N/A",
+    ".med.sa": "N/A",
     ".pub.sa": "149",
     ".sch.sa": "99",
     ".gov.sa": "N/A", // Government domains
