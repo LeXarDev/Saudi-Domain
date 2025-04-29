@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Sitemap: https://dosa.lexardev.xyz/sitemap.xml
+
+# Allow all bots to index the site
+User-agent: Googlebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Slurp
+Allow: /
+User-agent: DuckDuckBot
+Allow: /
+User-agent: Baiduspider
+Allow: /
+User-agent: YandexBot
+Allow: /
+
+# Prevent bots from crawling API routes
+Disallow: /api/
+
+# Optimize crawl rate
+Crawl-delay: 1

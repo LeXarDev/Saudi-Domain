@@ -1,0 +1,102 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Source code
+*.js text eol=lf diff=javascript
+*.jsx text eol=lf diff=javascript
+*.ts text eol=lf diff=typescript
+*.tsx text eol=lf diff=typescript
+*.mjs text eol=lf diff=javascript
+*.cjs text eol=lf diff=javascript
+
+# Styles
+*.css text eol=lf diff=css
+*.scss text eol=lf diff=css
+*.sass text eol=lf diff=css
+*.less text eol=lf diff=css
+*.pcss text eol=lf diff=css
+*.styled.* text eol=lf diff=css
+
+# Templates
+*.html text eol=lf diff=html
+*.htm text eol=lf diff=html
+*.jsx text eol=lf diff=html
+*.tsx text eol=lf diff=html
+*.vue text eol=lf diff=html
+
+# Documentation
+*.md text eol=lf diff=markdown
+*.mdx text eol=lf diff=markdown
+*.txt text eol=lf
+*.rst text eol=lf
+
+# Configuration and Data
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.config.* text eol=lf
+.env.* text eol=lf
+.babelrc text eol=lf
+.eslintrc text eol=lf
+.prettierrc text eol=lf
+
+# Lock files - treat as binary to avoid merge conflicts
+package-lock.json binary
+yarn.lock binary
+pnpm-lock.yaml binary
+
+# Graphics - treat as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.avif binary
+
+# SVG treated as text but identify as binary for diff
+*.svg text eol=lf -diff
+
+# Fonts
+*.ttf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
+*.otf binary
+
+# Audio/Video
+*.mp3 binary
+*.mp4 binary
+*.webm binary
+*.ogg binary
+*.wav binary
+
+# Archives
+*.zip binary
+*.gz binary
+*.tar binary
+
+# Git Config
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitkeep text eol=lf
+
+# Next.js specific
+next.config.js text eol=lf
+next-env.d.ts text eol=lf
+
+# Linting & Editor Config
+.eslintrc* text eol=lf
+.prettierrc* text eol=lf
+.stylelintrc* text eol=lf
+.editorconfig text eol=lf
+.vscode/*.json text eol=lf
+
+# CI/CD
+.github/** text eol=lf
+.gitlab-ci.yml text eol=lf
+.travis.yml text eol=lf
+Jenkinsfile text eol=lf
+

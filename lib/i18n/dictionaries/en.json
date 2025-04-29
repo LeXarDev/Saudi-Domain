@@ -1,0 +1,48 @@
+{
+  "siteName": "SA Domain Checker",
+  "description": "Check availability of .sa domains in Saudi Arabia",
+  "direction": "ltr",
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "domainChecker": {
+    "title": "Check .sa Domain Availability",
+    "subtitle": "Find your perfect Saudi domain name",
+    "placeholder": "Enter domain name",
+    "checkButton": "Check Availability",
+    "addDomain": "Add Domain",
+    "checkAllTLDs": "Check All Extensions",
+    "error": {
+      "invalidDomain": "Please enter a valid domain name",
+      "required": "Domain name is required",
+      "networkError": "Network error, please try again",
+      "unknown": "An unknown error occurred"
+    },
+    "checking": "Checking domain availability...",
+    "reserved": "Domain is not available",
+    "available": "Domain is available!",
+    "unavailable": "Domain is not available",
+    "register": "Register Domain",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share",
+    "shared": "Shared!",
+    "price": "/year",
+    "whoisTitle": "WHOIS Information",
+    "alternativesTitle": "Alternative Domains",
+    "bulkResults": "Bulk Search Results",
+    "multiDomainTitle": "Multiple Domain Results",
+    "allTLDsTitle": "All Extensions Results"
+  },
+  "history": {
+    "title": "Search History",
+    "empty": "No search history",
+    "clear": "Clear history"
+  },
+  "footer": {
+    "rightsReserved": "All rights reserved",
+    "poweredBy": "Made with 💙 in Riyadh"
+  }
+}
