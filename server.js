@@ -64,13 +64,7 @@ app.post('/api/domain', async (req, res) => {
 
     console.log('All results:', results);
 
-    // إذا كان هناك نطاق واحد فقط، نرجع النتيجة بالتنسيق القديم
-    if (domains.length === 1) {
-      const { status, message } = results[0];
-      return res.json({ status, message });
-    }
-
-    // إذا كان هناك نطاقات متعددة، نرجع مصفوفة النتائج
+    // نرجع النتائج دائماً بنفس التنسيق
     return res.json(results);
   } catch (error) {
     console.error('Error:', error);

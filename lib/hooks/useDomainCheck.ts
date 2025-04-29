@@ -60,6 +60,15 @@ export function useDomainCheck() {
     }
   };
 
+  const processApiResponse = (data: any[]): DomainResult[] => {
+    return data.map(result => ({
+      domain: result.domain,
+      status: result.status,
+      message: result.message,
+      whoisData: result.status === 'in_use' ? generateDemoWhoisData(result.domain, false) : undefined
+    }));
+  };
+
   const checkDomain = useCallback(async (domain: string): Promise<DomainResult> => {
     // التحقق من وجود النتيجة في التخزين المؤقت
     const cachedItem = domainCache.get(domain);
@@ -77,7 +86,7 @@ export function useDomainCheck() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ domainName: domain }),
+        body: JSON.stringify({ domainName: [domain] }),
       });
 
       if (!response.ok) {
@@ -87,12 +96,8 @@ export function useDomainCheck() {
       const data = await response.json();
       console.log("API Response:", data);
       
-      const result: DomainResult = {
-        domain,
-        status: data.status,
-        message: data.message,
-        whoisData: data.status === 'in_use' ? generateDemoWhoisData(domain, false) : undefined
-      };
+      const results = processApiResponse(data);
+      const result = results[0];
 
       // تخزين النتيجة في التخزين المؤقت
       domainCache.set(domain, {
@@ -100,6 +105,7 @@ export function useDomainCheck() {
         timestamp: Date.now()
       });
 
+      setResults([result]);
       return result;
     } catch (err) {
       console.error("Error checking domain:", err);
@@ -125,13 +131,7 @@ export function useDomainCheck() {
       }
 
       const data = await response.json();
-      const results: DomainResult[] = data.map((result: any) => ({
-        domain: result.domain,
-        status: result.status,
-        message: result.message,
-        whoisData: result.status === 'in_use' ? generateDemoWhoisData(result.domain, false) : undefined
-      }));
-
+      const results = processApiResponse(data);
       setResults(results);
       return results;
     } catch (err) {
