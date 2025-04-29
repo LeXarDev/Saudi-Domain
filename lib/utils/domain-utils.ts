@@ -51,7 +51,7 @@ export const generateAlternativeDomains = (domain: string): string[] => {
 };
 
 // Generate fake WHOIS data for demo purposes
-export const generateDemoWhoisData = (domain: string, isAvailable: boolean) => {
+export function generateDemoWhoisData(domain: string, isAvailable: boolean) {
   if (isAvailable) {
     return undefined;
   }

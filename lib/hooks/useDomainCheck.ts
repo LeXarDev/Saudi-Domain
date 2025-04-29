@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { formatDomain, generateAlternativeDomains, generateDemoWhoisData, getDomainPrice } from "../utils/domain-utils";
+import { config } from "../config";
 
 export interface WhoisData {
   registrar: string;
@@ -71,7 +72,7 @@ export function useDomainCheck() {
       console.log("=== Checking Domain ===");
       console.log("Domain name:", domain);
       
-      const response = await fetch("/api/domain", {
+      const response = await fetch(`${config.apiBaseUrl}/api/domain`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
