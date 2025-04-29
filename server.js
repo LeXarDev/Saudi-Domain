@@ -6,35 +6,72 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the dist directory
+// Serve static files
 app.use(express.static('dist'));
+
+// Serve index.html for all routes except /api
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile('dist/index.html', { root: __dirname });
+});
 
 // API route for domain checking
 app.post('/api/domain', async (req, res) => {
   try {
     const { domainName } = req.body;
-    console.log('\n=== Checking Domain ===');
-    console.log('Domain name:', domainName);
+    
+    // التحقق مما إذا كان domainName مصفوفة أم نص
+    const domains = Array.isArray(domainName) ? domainName : [domainName];
+    console.log('\n=== Checking Domains ===');
+    console.log('Domain names:', domains);
 
-    // التحقق من صحة النطاق
+    // التحقق من صحة النطاقات
     const SAUDI_TLDS = ['.sa', '.com.sa', '.net.sa', '.org.sa', '.edu.sa', '.med.sa', '.pub.sa', '.sch.sa', '.gov.sa'];
-    if (!SAUDI_TLDS.some(tld => domainName.endsWith(tld))) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'يجب أن ينتهي النطاق بأحد الامتدادات السعودية'
-      });
+    for (const domain of domains) {
+      if (!SAUDI_TLDS.some(tld => domain.endsWith(tld))) {
+        return res.status(400).json({
+          status: 'error',
+          message: `النطاق ${domain} يجب أن ينتهي بأحد الامتدادات السعودية`
+        });
+      }
     }
 
-    const status = await checkDomainWithNicSa(domainName);
-    
-    let message = '';
-    if (status === 'available' || status === 'in_use' || status === 'reserved_zone' || status === 'error') {
-      message = status;
+    console.log('Processing domains:', domains);
+
+    // فحص جميع النطاقات بالتوازي
+    const results = [];
+    for (const domain of domains) {
+      try {
+        console.log('Checking domain:', domain);
+        const status = await checkDomainWithNicSa(domain);
+        console.log('Domain status:', domain, status);
+        results.push({
+          domain,
+          status,
+          message: status
+        });
+      } catch (error) {
+        console.error('Error checking domain:', domain, error);
+        results.push({
+          domain,
+          status: 'error',
+          message: 'Error checking domain'
+        });
+      }
     }
-    
-    const response = { status, message };
-    console.log('API Response:', response);
-    return res.json(response);
+
+    console.log('All results:', results);
+
+    // إذا كان هناك نطاق واحد فقط، نرجع النتيجة بالتنسيق القديم
+    if (domains.length === 1) {
+      const { status, message } = results[0];
+      return res.json({ status, message });
+    }
+
+    // إذا كان هناك نطاقات متعددة، نرجع مصفوفة النتائج
+    return res.json(results);
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ 
@@ -45,40 +82,58 @@ app.post('/api/domain', async (req, res) => {
 });
 
 async function checkDomainWithNicSa(domain) {
-  try {
-    domain = domain.toLowerCase().trim();
+  const maxRetries = 3;
+  let attempt = 0;
 
-    if (!domain) {
-      throw new Error('Domain name is required');
+  while (attempt < maxRetries) {
+    try {
+      domain = domain.toLowerCase().trim();
+
+      if (!domain) {
+        throw new Error('Domain name is required');
+      }
+
+      console.log(`Checking domain ${domain} (attempt ${attempt + 1}/${maxRetries})`);
+
+      const response = await fetch('https://nic.sa/check/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ 
+          domainName: domain,
+          checkType: 'availability'
+        })
+      });
+
+      if (response.status === 422) {
+        return 'reserved_zone';
+      }
+      
+      if (!response.ok) {
+        console.warn(`Domain check returned status: ${response.status} for ${domain}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Domain ${domain} check result:`, data);
+      return data.status || 'error';
+    } catch (error) {
+      console.error(`Error checking domain ${domain} (attempt ${attempt + 1}/${maxRetries}):`, error);
+      attempt++;
+      
+      if (attempt === maxRetries) {
+        console.error(`All attempts failed for domain ${domain}`);
+        return 'error';
+      }
+      
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
-
-    const response = await fetch('https://nic.sa/check/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ 
-        domainName: domain,
-        checkType: 'availability'
-      })
-    });
-
-    if (response.status === 422) {
-      return 'reserved_zone';
-    }
-    
-    if (!response.ok) {
-      console.warn(`Domain check returned status: ${response.status}`);
-      return 'error';
-    }
-
-    const data = await response.json();
-    return data.status || 'error';
-  } catch (error) {
-    console.error('Error checking domain with nic.sa:', error);
-    return 'error';
   }
+
+  return 'error';
 }
 
 const PORT = process.env.PORT || 3000;

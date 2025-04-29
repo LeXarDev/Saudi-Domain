@@ -112,15 +112,25 @@ export function useDomainCheck() {
     setError(null);
     
     try {
-      // التحقق من النطاقات المتعددة في مجموعات لتجنب الضغط على الخادم
-      const batchSize = 5;
-      const results: DomainResult[] = [];
-      
-      for (let i = 0; i < domains.length; i += batchSize) {
-        const batch = domains.slice(i, i + batchSize);
-        const batchResults = await Promise.all(batch.map(checkDomain));
-        results.push(...batchResults);
+      const response = await fetch(`${config.apiBaseUrl}/api/domain`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ domainName: domains }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
       }
+
+      const data = await response.json();
+      const results: DomainResult[] = data.map((result: any) => ({
+        domain: result.domain,
+        status: result.status,
+        message: result.message,
+        whoisData: result.status === 'in_use' ? generateDemoWhoisData(result.domain, false) : undefined
+      }));
 
       setResults(results);
       return results;
@@ -130,7 +140,7 @@ export function useDomainCheck() {
     } finally {
       setLoading(false);
     }
-  }, [checkDomain]);
+  }, []);
 
   const clearCache = useCallback(() => {
     domainCache.clear();
